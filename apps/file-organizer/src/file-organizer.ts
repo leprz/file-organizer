@@ -1,34 +1,23 @@
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
-import {Directory} from "./common/directory";
-import {FileOrganizer} from "./path-converter/file-organizer";
-import {NodeFileSystem} from "./file-system/node-file-system";
+import {ExistingDirectory} from "./common/existing-directory";
+import {FileSystem} from "./common/file-system";
+import {ExistingFile} from "./common/existing-file";
+import {FileDestinationBuilder, FileRelocator, FileToRelocate} from "./file-path-converter/file-destination-builder";
+import {FileFilter} from "./common/file-filter";
 
-yargs(hideBin(process.argv))
-    .usage('Usage: $0 <command> [options]')
-    .example('$0 <command> -s ./source -d ./destination', 'Organize files')
-    .command('move', 'Move files from source to destination', (yargs) => {
-        return yargs.option('source', {
-            alias: 's',
-            type: 'string',
-            description: 'Source directory'
-        })
-            .option('destination', {
-                alias: 'd',
-                type: 'string',
-                description: 'Destination directory'
-            })
-            .demandOption(['source', 'destination']);
-    }, (argv) => {
-        move(argv.source, argv.destination).then();
+export class FileOrganizer {
+  constructor(
+    private readonly fileSystem: FileSystem,
+    private readonly destinationBuilder: FileDestinationBuilder,
+    private readonly fileRelocator: FileRelocator,
+    private readonly fileFilters: FileFilter[] = []
+  ) {
+  }
+  organizeFiles(source: ExistingDirectory, destination: ExistingDirectory) {
+    const selectedFiles: ExistingFile[] = this.fileSystem.loadFilesFromDirectory(source);
+    const filteredFiles: ExistingFile[] = FileFilter.many(this.fileFilters, selectedFiles);
+    const filesToRelocate: FileToRelocate[] = this.destinationBuilder.buildFilesToRelocate(filteredFiles, destination);
+    filesToRelocate.forEach((file) => {
+      file.relocate(this.fileRelocator);
     })
-    .demandCommand()
-    .argv;
-
-async function move(source: string, destination: string) {
-    const fileOrganizer = new FileOrganizer(new NodeFileSystem());
-    fileOrganizer.organizeFiles(
-        Directory.existingValid(source, new NodeFileSystem()),
-        Directory.existingValid(destination, new NodeFileSystem())
-    );
+  }
 }

@@ -13,7 +13,7 @@
         "outputPath": "dist/apps/file-organizer",
         "format": ["cjs"],
         "bundle": false,
-        "main": "apps/file-organizer/src/file-organizer.ts",
+        "main": "apps/file-organizer/src/cli/file-organizer.ts",
         "tsConfig": "apps/file-organizer/tsconfig.app.json",
         "assets": ["apps/file-organizer/src/assets"],
         "generatePackageJson": true,

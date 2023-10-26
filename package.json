@@ -2,7 +2,9 @@
   "name": "@file-organizer/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "watch": "nx run file-organizer:build:development --watch"
+  },
   "private": true,
   "devDependencies": {
     "@nx/esbuild": "16.5.2",

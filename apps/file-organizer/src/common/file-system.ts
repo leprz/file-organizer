@@ -1,12 +1,23 @@
-import {Directory} from "./directory";
-import {File} from "./file";
+import {ExistingDirectory} from "./existing-directory";
+import {ExistingFile} from "./existing-file";
+import {Path} from "./path";
 
-export interface FileSystem {
-  exists(path: string): boolean;
+export interface FileSystem extends CheckIfFileExists, CheckIfIsDirectory, GetFileStats {
+  loadFilesFromDirectory(source: ExistingDirectory): ExistingFile[];
 
-  isDirectory(path: string): boolean;
+  move(sourceFile: ExistingFile, destination: Path): void;
 
-  loadFilesFromDirectory(source: Directory): File[];
+  copy(sourceFile: ExistingFile, destination: Path): void;
+}
 
-  stats(path: string): {mtime: Date};
+export interface CheckIfFileExists {
+    exists(path: string): boolean;
+}
+
+export interface CheckIfIsDirectory {
+    isDirectory(path: string): boolean;
+}
+
+export interface GetFileStats {
+    stats(path: string): {mtime: Date};
 }

@@ -3,17 +3,18 @@ import {join} from 'path';
 import * as fs from 'fs';
 
 describe('File organizer', () => {
+  const distPath = './dist';
   beforeAll(() => {
-    if (!fs.existsSync('./dist')) {
-      fs.mkdirSync('./dist');
+    if (!fs.existsSync(distPath)) {
+      fs.mkdirSync(distPath);
     }
   });
-  const cliPath = join(process.cwd(), '../../dist/apps/file-organizer/file-organizer.js move');
+  const cliPath = join(process.cwd(), '../../dist/apps/file-organizer/file-organizer.js copy');
 
-  it('should move files', () => {
-    const output = execSync(`node ${cliPath} --source=./fixtures --destination=./dist`).toString();
-
-    expect(output).toMatch('Moving files from ./source to ./destination');
+  it('should copy files', () => {
+    execSync(`node ${cliPath} --source=fixtures --destination=dist`).toString();
+    expect(fs.existsSync('./dist/2023/6/7/1.png')).toBeTruthy();
+    expect(fs.existsSync('./dist/2023/6/7/2.png')).toBeTruthy();
   });
 
   it('should validate non existing directory', () => {
@@ -23,6 +24,12 @@ describe('File organizer', () => {
   });
 
   it('should validate required parameters', () => {
+    expect(()=> {
+      execSync(`node ${cliPath} --source=./fixtures`).toString();
+    }).toThrow();
+  });
 
+  afterAll(() => {
+    fs.rmSync(distPath, {recursive: true, force: true});
   });
 });
