@@ -5,9 +5,9 @@ import {NodeFileSystem} from "../file-system/node-file-system";
 import {FileExtensionFilter} from "../file-filter/file-extension-filter";
 import {FileOrganizer} from "../file-organizer";
 import {
-    CopyFileRelocator,
-    CreationDateDestinationBuilder,
-    MoveFileRelocator
+  CopyFileRelocator,
+  CreationDateDestinationBuilder,
+  MoveFileRelocator
 } from "../file-path-converter/file-destination-builder";
 
 yargs(hideBin(process.argv))
@@ -57,10 +57,12 @@ async function move(source: string, destination: string) {
             new FileExtensionFilter(['mp4', 'mov', 'avi'])
         ]
     );
-    fileOrganizer.organizeFiles(
+    await fileOrganizer.organizeFiles(
         ExistingDirectory.existingValid(source, fileSystem),
         ExistingDirectory.existingValid(destination, fileSystem)
     );
+
+    process.exit(0);
 }
 
 async function copy(source: string, destination: string) {
@@ -75,8 +77,10 @@ async function copy(source: string, destination: string) {
         ]
     );
 
-    fileOrganizer.organizeFiles(
+    await fileOrganizer.organizeFiles(
         ExistingDirectory.existingValid(source, fileSystem),
         ExistingDirectory.existingValid(destination, fileSystem)
     );
+
+    process.exit(0);
 }

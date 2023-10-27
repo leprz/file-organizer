@@ -2,6 +2,7 @@ import {ExistingDirectory} from "../common/existing-directory";
 import {ExistingFile} from "../common/existing-file";
 import {Path} from "../common/path";
 import {FileSystem, GetFileStats} from "../common/file-system";
+import {Logger} from "../common/logger";
 
 export abstract class FileDestinationBuilder {
   abstract buildFilesToRelocate(filesToRelocate: ExistingFile[], destination: ExistingDirectory): FileToRelocate[];
@@ -10,8 +11,9 @@ export abstract class FileDestinationBuilder {
 export class FileToRelocate {
   constructor(private readonly source: ExistingFile, private readonly destination: Path) {}
 
-  relocate(relocator: FileRelocator): void {
+  relocate(relocator: FileRelocator, logger: Logger): void {
     relocator.relocate(this.source, this.destination);
+    logger.success(`Relocated ${this.source.path.asString()} to ${this.destination.asString()}`);
   }
 }
 
