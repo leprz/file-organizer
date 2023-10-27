@@ -3,6 +3,7 @@ import {ExistingFile} from "../common/existing-file";
 import {Path} from "../common/path";
 import {FileSystem, GetFileStats} from "../common/file-system";
 import {Logger} from "../common/logger";
+import {format} from 'date-fns'
 
 export abstract class FileDestinationBuilder {
   abstract buildFilesToRelocate(filesToRelocate: ExistingFile[], destination: ExistingDirectory): FileToRelocate[];
@@ -37,8 +38,10 @@ export class CopyFileRelocator implements FileRelocator {
 }
 
 export class CreationDateDestinationBuilder implements FileDestinationBuilder {
-  constructor(private readonly fileSystem: GetFileStats) {
-  }
+  constructor(
+    private readonly fileSystem: GetFileStats,
+    private readonly format = 'yyyy/mm'
+  ) {}
   buildFilesToRelocate(filesToRelocate: ExistingFile[], destination: ExistingDirectory): FileToRelocate[] {
     return filesToRelocate.map((file) => {
       return new FileToRelocate(file, this.buildDestinationPath(file, destination));
@@ -47,10 +50,7 @@ export class CreationDateDestinationBuilder implements FileDestinationBuilder {
 
   private buildDestinationPath(file: ExistingFile, destination: ExistingDirectory): Path {
     const createdAt = file.getCreatedAt(this.fileSystem);
-    const year = createdAt.getFullYear();
-    const month = createdAt.getMonth() + 1;
-    const day = createdAt.getDate();
-    const filePath = new Path(`${year}/${month}/${day}/${file.getName()}`);
+    const filePath = new Path(`${format(createdAt, this.format)}/${file.getName()}`);
     return destination.addPath(filePath);
   }
 }
