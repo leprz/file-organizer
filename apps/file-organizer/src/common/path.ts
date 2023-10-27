@@ -8,7 +8,7 @@ export class Path {
   }
 
   private replaceBackslashWithSlash(path: string): string {
-    return path.replace("\\", '/');
+    return path.replace(/\\/g, '/');
   }
 
   private removeTrailingSlash(path: string): string {

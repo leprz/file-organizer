@@ -1,6 +1,6 @@
 import {FileExtensionFilter} from "./file-extension-filter";
 import {ExistingFile} from "../common/existing-file";
-import {ExistingFileObjectMother} from "../common/existing-file.spec";
+import {ExistingFileObjectMother} from "../common/existing-file.object-mother";
 
 describe('File extension filter', () => {
     it('should filter files by extension', () => {

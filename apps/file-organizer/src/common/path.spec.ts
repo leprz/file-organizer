@@ -9,7 +9,7 @@ describe('path value object', () => {
     ['this is valid/path', 'this is valid/path'],
     ['thisIsValid.path', 'thisIsValid.path'],
     ['\\this\\is-valid', '/this/is-valid'],
-    ['C:\\this\\is-valid', '/this/is-valid'],
+    ['C:\\this\\is-valid', 'C:/this/is-valid'],
   ];
 
   const invalidPaths = [
